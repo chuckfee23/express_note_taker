@@ -4,7 +4,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
-const notes = require("./Develop/db/db.json");
+const notes = require("./db/db.json");
 // declare PORT and readFromFile
 const PORT = process.env.port || 3001;
 const readFromFile = util.promisify(fs.readFile);
@@ -28,7 +28,7 @@ app.get("/api/notes", (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/index.html"));
 });
-
+// writeToFile function
 const writeToFile = (destination, content) =>
   fs.writeFile(destination, JSON.stringify(content, null, 4), (err) => {
     if (err) {
@@ -37,7 +37,7 @@ const writeToFile = (destination, content) =>
       console.info(`\nData written to ${destination}`);
     }
   });
-
+// function to add notes to file
 const readAndAppend = (content, file) => {
   fs.readFile(file, "utf8", (err, data) => {
     if (err) {
