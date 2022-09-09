@@ -30,18 +30,13 @@ app.get("*", (req, res) => {
 });
 
 const writeToFile = (destination, content) =>
-  fs.writeFile(
-    destination,
-    JSON.stringify(content, null, 4),
-    (err) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.info(`\nData written to ${destination}`);
-      }
+  fs.writeFile(destination, JSON.stringify(content, null, 4), (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.info(`\nData written to ${destination}`);
     }
-    // err ? console.error(err) : console.info(`\nData written to ${destination}`)
-  );
+  });
 
 const readAndAppend = (content, file) => {
   fs.readFile(file, "utf8", (err, data) => {
@@ -51,6 +46,24 @@ const readAndAppend = (content, file) => {
       const parsedData = JSON.parse(data);
       parsedData.push(content);
       writeToFile(file, parsedData);
+    }
+  });
+};
+
+const readAndDelete = (id, file) => {
+  fs.readFile(file, "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      const parsedData = JSON.parse(data);
+      console.log(parsedData);
+      for (i = 0; i < parsedData.length; i++) {
+        if (parsedData[i].id === id) {
+          parsedData.splice(i, 1);
+          writeToFile(file, parsedData);
+        }
+      }
+      // writeToFile(file, parsedData);
     }
   });
 };
@@ -68,6 +81,13 @@ app.post("/api/notes", (req, res) => {
   } else {
     res.error(`Error adding note.`);
   }
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+  const id = req.url.slice(11);
+  console.log(id);
+  readAndDelete(id, "./db/db.json");
+  res.json("DELETED!");
 });
 
 app.listen(PORT, () =>
