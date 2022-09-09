@@ -6,7 +6,7 @@ const path = require("path");
 const util = require("util");
 const notes = require("./db/db.json");
 // declare PORT and readFromFile
-const PORT = process.env.port || 3001;
+const PORT = process.env.PORT || 3001;
 const readFromFile = util.promisify(fs.readFile);
 
 // create an instance of express
